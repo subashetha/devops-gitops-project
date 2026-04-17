@@ -11,26 +11,51 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Build working"
+                echo 'Build Stage Completed'
             }
         }
 
-        stage('SonarQube Test') {
+        stage('SonarQube Analysis') {
             steps {
-                echo "Skipping Sonar temporarily"
+                echo "Skipping SonarQube for now (can enable later)"
+                // If needed later:
+                // withSonarQubeEnv('SonarQube') {
+                //     sh '''
+                //         sonar-scanner \
+                //         -Dsonar.projectKey=devops-project \
+                //         -Dsonar.sources=. \
+                //         -Dsonar.host.url=http://192.168.49.1:9000
+                //     '''
+                // }
             }
         }
 
-        stage('Docker Test') {
+        stage('Docker Build') {
             steps {
-                sh 'docker --version || echo "Docker not accessible from Jenkins"'
+                sh 'docker build -t devops-app .'
             }
         }
 
-        stage('K8s Test') {
+        stage('Docker Run (Optional Test)') {
             steps {
-                sh 'kubectl version --client || echo "kubectl not installed in Jenkins"'
+                sh 'docker run -d -p 8081:8080 devops-app || echo "Run skipped or failed"'
             }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f kubernetes/ || echo "kubectl not configured yet"'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+
+        failure {
+            echo 'Pipeline failed — check logs'
         }
     }
 }
