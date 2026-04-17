@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        sonarQubeScanner 'sonar-scanner'
-    }
-
     environment {
         DOCKER_IMAGE = "devops-app"
     }
@@ -13,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: https://github.com/subashetha/devops-gitops-project.git
+                git branch: 'main', url: 'https://github.com/subashetha/devops-gitops-project.git'
             }
         }
 
@@ -30,8 +26,7 @@ pipeline {
                     sonar-scanner \
                     -Dsonar.projectKey=devops-project \
                     -Dsonar.sources=. \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    -Dsonar.host.url=http://localhost:9000
                     '''
                 }
             }
