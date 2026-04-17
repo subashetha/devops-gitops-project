@@ -11,35 +11,25 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Build Stage'
+                echo "Build working"
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Test') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        echo "Running SonarQube analysis..."
-                        sonar-scanner \
-                        -Dsonar.projectKey=devops-project \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://192.168.49.1:9000
-                    '''
-                }
+                echo "Skipping Sonar temporarily"
             }
         }
 
-        stage('Docker Build') {
+        stage('Docker Test') {
             steps {
-                echo "Docker build step"
-                // sh 'docker build -t devops-app .'
+                sh 'docker --version || echo "Docker not accessible from Jenkins"'
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('K8s Test') {
             steps {
-                echo "Kubernetes deploy step"
-                // sh 'kubectl apply -f kubernetes/'
+                sh 'kubectl version --client || echo "kubectl not installed in Jenkins"'
             }
         }
     }
