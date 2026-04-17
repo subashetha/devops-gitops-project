@@ -32,14 +32,14 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo "Docker build step"
-                # sh 'docker build -t devops-app .'
+                // sh 'docker build -t devops-app .'
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
                 echo "Kubernetes deploy step"
-                # sh 'kubectl apply -f kubernetes/'
+                // sh 'kubectl apply -f kubernetes/'
             }
         }
     }
