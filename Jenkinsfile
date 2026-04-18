@@ -30,12 +30,12 @@ stage('SonarQube Analysis') {
 }
 
         stage('Quality Gate') {
-            steps {
-                timeout(time: 3, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
+    steps {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
         }
+    }
+}
 
         stage('Docker Build') {
             steps {
