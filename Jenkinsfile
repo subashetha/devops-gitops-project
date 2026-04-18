@@ -15,19 +15,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh """
-                        sonar-scanner \
-                        -Dsonar.projectKey=devops-app \
-                        -Dsonar.projectName=DevOpsApp \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=-Dsonar.host.url=http://localhost:9000
-                    """
-                }
-            }
+       
+stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh '''
+                sonar-scanner \
+                  -Dsonar.projectKey=devops-app \
+                  -Dsonar.projectName=DevOpsApp \
+                  -Dsonar.sources=.
+            '''
         }
+    }
+}
 
         stage('Quality Gate') {
             steps {
