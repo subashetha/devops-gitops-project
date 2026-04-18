@@ -54,7 +54,7 @@ stage('SonarQube Analysis') {
         stage('Ansible Deploy') {
             steps {
                 sh '''
-                    ansible-playbook -i ansible/inventory/hosts ansible/playbooks/docker_setup.yml || echo "Ansible skipped"
+                    ansible-playbook -i ansible/inventory/hosts ansible/playbooks/docker_setup.yml
                 '''
             }
         }
