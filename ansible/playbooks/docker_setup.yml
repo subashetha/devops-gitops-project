@@ -1,31 +1,25 @@
----
-- name: Install and configure Docker
-  hosts: local
+- name: Docker Setup
+  hosts: all
   become: yes
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
 
-    - name: Install safe dependencies
-  apt:
-    name:
-      - curl
-      - ca-certificates
-    state: present
-    update_cache: yes
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - apt-transport-https
+        state: present
+        update_cache: yes
 
     - name: Install Docker
       apt:
         name: docker.io
         state: present
+        update_cache: yes
 
-    - name: Start Docker service
+    - name: Start Docker
       service:
         name: docker
         state: started
         enabled: yes
-
-    - name: Verify Docker installation
-      command: docker --version
