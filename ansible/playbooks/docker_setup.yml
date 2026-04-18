@@ -8,14 +8,13 @@
       apt:
         update_cache: yes
 
-    - name: Install required packages
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: present
+    - name: Install safe dependencies
+  apt:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+    update_cache: yes
 
     - name: Install Docker
       apt:
