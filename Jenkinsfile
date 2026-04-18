@@ -15,20 +15,27 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                echo "Skipping SonarQube for now (can enable later)"
-                // If needed later:
-                // withSonarQubeEnv('SonarQube') {
-                //     sh '''
-                //         sonar-scanner \
-                //         -Dsonar.projectKey=devops-project \
-                //         -Dsonar.sources=. \
-                //         -Dsonar.host.url=http://192.168.49.1:9000
-                //     '''
-                // }
-            }
+       stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh '''
+                sonar-scanner \
+                -Dsonar.projectKey=devops-app \
+                -Dsonar.projectName=DevOps App \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://sonarqube:9000 \
+                -Dsonar.login=$SONAR_TOKEN
+            '''
         }
+    }
+}     
+          stage('Quality Gate') {
+    steps {
+        timeout(time: 3, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
 
         stage('Docker Build') {
             steps {
@@ -41,6 +48,14 @@ pipeline {
                 sh 'docker run -d -p 8081:8080 devops-app || echo "Run skipped or failed"'
             }
         }
+
+        stage('Ansible Deploy') {
+    steps {
+        sh '''
+            ansible-playbook -i ansible/inventory/hosts ansible/playbooks/docker_setup.yml --ask-become-pass
+        '''
+    }
+}
 
         stage('Deploy to Kubernetes') {
             steps {
