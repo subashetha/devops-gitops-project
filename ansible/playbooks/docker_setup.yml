@@ -17,9 +17,3 @@
         name: docker.io
         state: present
         update_cache: yes
-
-    - name: Start Docker
-      service:
-        name: docker
-        state: started
-        enabled: yes
