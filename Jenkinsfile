@@ -23,7 +23,7 @@ pipeline {
                         -Dsonar.projectKey=devops-app \
                         -Dsonar.projectName=DevOpsApp \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://sonarqube:9000
+                        -Dsonar.host.url=-Dsonar.host.url=http://localhost:9000
                     """
                 }
             }
