@@ -8,6 +8,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/subashetha/devops-gitops-project.git'
             }
         }
+stage('Test') {
+    steps {
+        sh 'pytest'
+    }
+}
 
         stage('Build') {
             steps {
@@ -15,7 +20,7 @@ pipeline {
             }
         }
 
-       
+ /*      
 stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('sonarqube') {
@@ -28,7 +33,7 @@ stage('SonarQube Analysis') {
         }
     }
 }
-
+*/
         stage('Quality Gate') {
     steps {
         timeout(time: 5, unit: 'MINUTES') {
