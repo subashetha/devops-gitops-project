@@ -8,15 +8,15 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/subashetha/devops-gitops-project.git'
             }
         }
-stage('Test') {
-    steps {
-        sh '''
-        pip3 install pytest
-        pytest
-        '''
-    }
-}
 
+        stage('Test') {
+            steps {
+                sh '''
+                pip3 install pytest
+                pytest
+                '''
+            }
+        }
 
         stage('Build') {
             steps {
@@ -24,27 +24,26 @@ stage('Test') {
             }
         }
 
-      
-stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv('sonarqube') {
-            sh '''
-                sonar-scanner \
-                  -Dsonar.projectKey=devops-app \
-                  -Dsonar.projectName=DevOpsApp \
-                  -Dsonar.sources=.
-            '''
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh '''
+                    sonar-scanner \
+                      -Dsonar.projectKey=devops-app \
+                      -Dsonar.projectName=DevOpsApp \
+                      -Dsonar.sources=.
+                    '''
+                }
+            }
         }
-    }
-}
 
         stage('Quality Gate') {
-    steps {
-        timeout(time: 5, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
-    }
-}
 
         stage('Docker Build') {
             steps {
@@ -55,7 +54,7 @@ stage('SonarQube Analysis') {
         stage('Docker Run (Optional Test)') {
             steps {
                 sh '''
-                    docker run -d -p 8081:8080 devops-app || echo "Container already running"
+                docker run -d -p 8081:8080 devops-app || echo "Container already running"
                 '''
             }
         }
@@ -63,7 +62,7 @@ stage('SonarQube Analysis') {
         stage('Ansible Deploy') {
             steps {
                 sh '''
-                    ansible-playbook -i ansible/inventory/hosts ansible/playbooks/docker_setup.yml
+                ansible-playbook -i ansible/inventory/hosts ansible/playbooks/docker_setup.yml
                 '''
             }
         }
@@ -71,10 +70,9 @@ stage('SonarQube Analysis') {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    kubectl apply -f kubernetes/ || echo "kubectl not configured"
+                kubectl apply -f kubernetes/ || echo "kubectl not configured"
                 '''
             }
         }
     }
-
-   
+}
