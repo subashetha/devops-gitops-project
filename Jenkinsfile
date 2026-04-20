@@ -10,9 +10,13 @@ pipeline {
         }
 stage('Test') {
     steps {
-        sh 'pytest'
+        sh '''
+        pip3 install pytest
+        pytest
+        '''
     }
 }
+
 
         stage('Build') {
             steps {
@@ -20,7 +24,7 @@ stage('Test') {
             }
         }
 
- /*      
+      
 stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('sonarqube') {
@@ -33,7 +37,7 @@ stage('SonarQube Analysis') {
         }
     }
 }
-*/
+
         stage('Quality Gate') {
     steps {
         timeout(time: 5, unit: 'MINUTES') {
@@ -73,15 +77,4 @@ stage('SonarQube Analysis') {
         }
     }
 
-    post {
-        success {
-            echo 'Pipeline completed successfully'
-        }
-
-        failure {
-            echo 'Pipeline failed — check logs'
-        }
-    }
-}
-
-
+   
